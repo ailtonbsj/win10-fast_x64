@@ -1,40 +1,76 @@
-regedit /s explorer.reg
-regedit /s performance.reg
-regedit /s taskbar.reg
-REM regedit /s wallpaper.reg
-regedit /s transparency.reg
-regedit /s login.reg
-regedit /s disableAntiSpyware.reg
-regedit /s update.reg
-regedit /s cortana.reg
-regedit /s notifications.reg
-regedit /s time.reg
-
 copy StartLayout.xml C:\
-regedit /s startMenu.reg
 
-del /q "%userprofile%\Desktop\Microsoft Edge.lnk"
+regedit /s cortana-voiceActivationDisableAboveLockscreen.reg
+regedit /s disableActivityFeed.reg
+regedit /s disableLockScreenReminders.reg
+regedit /s disableLogonBackgroundImage.reg
+regedit /s disableRotatingLockScreen.reg
+regedit /s disableSubscribedContent.reg
+regedit /s disableTransparency.reg
+regedit /s explorer-disableAnimationsAndShadow.reg
+regedit /s explorer-disableRecentAndFrequent.reg
+regedit /s explorer-showFileExt.reg
+regedit /s startMenu-hideRecentlyAddedApps.reg
+regedit /s startMenu-removeTiles.reg
+regedit /s taskbar-removeCortanaAndPeopleBand.reg
+regedit /s update-ActiveHours.reg
 
-REM Windows Update
-net stop wuauserv
-net stop bits
-net stop dosvc
+@rem Get arguments from command line
+set dayLight=True
+for %%i in (%*) do (
+ if "%%i" == "/w" (
+  set wall=True
+ )
+ if "%%i" == "/d" (
+  set defender=True
+ )
+ if "%%i" == "/u" (
+  set update=True
+ )
+ if "%%i" == "/t" (
+  set dayLight=False
+ )
+)
 
-sc config wuauserv start=disabled
-sc config bits start= disabled
-sc config dosvc start= disabled
+if "%wall%" == "True" (
+ echo Applying Wallpaper
+ regedit /s changeWallpaper.reg
+)
+if "%defender%" == "True" (
+ echo Applying Defender
+ regedit /s defender-disableAntiSpyware.reg
+)
+if "%update%" == "True" (
+ echo Applying Update
+ net stop bits
+ regedit /s update-DisableDoSvc.reg
+ sc config bits start=disabled
+ reg add HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU\ /v NoAutoUpdate /t REG_DWORD /d 1 /f
+ reg add HKLM\SOFTWARE\WOW6432Node\Policies\Microsoft\Windows\WindowsUpdate\AU\ /v NoAutoUpdate /t REG_DWORD /d 1 /f
+ net stop wuauserv
+ sc config wuauserv start=disabled
+ net stop dosvc
+ sc config dosvc start=disabled
+)
+if "%update%" == "True" (
+ regedit /s disableDynamicDaylightTime.reg
+)
 
-reg add HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU\ /v NoAutoUpdate /t REG_DWORD /d 1 /f
-reg add HKLM\SOFTWARE\WOW6432Node\Policies\Microsoft\Windows\WindowsUpdate\AU\ /v NoAutoUpdate /t REG_DWORD /d 1 /f
+@rem Remove variables
+set "wall="
+set "defender="
+set "update="
 
-REM wmic useraccount where name="%USERNAME%" get sid
-
-REM [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\SystemProtectedUserData\S-1-5-21-150643285-2270290189-2103209189-1001\AnyoneRead\LockScreen]
-REM "HideLogonBackgroundImage"=dword:00000001
-
+@rem Remove MetroApps
 powershell Set-ExecutionPolicy RemoteSigned
 powershell .\removeApps.ps1
 
+@rem Remove OneDrive
 taskkill /f /im OneDrive.exe
 timeout 1
 %SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall
+
+del /q "%userprofile%\Desktop\Microsoft Edge.lnk"
+shutdown /r -t 0
+
+@rem wmic useraccount where name="%USERNAME%" get sid
