@@ -34,6 +34,7 @@ for %%i in (%*) do (
 
 if "%wall%" == "True" (
  echo Applying Wallpaper
+ copy wall.png C:\Windows\Web\Wallpaper\Theme2\
  regedit /s changeWallpaper.reg
 )
 if "%defender%" == "True" (
