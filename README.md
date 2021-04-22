@@ -25,8 +25,8 @@ Esse script adequa o Windows 10 para melhor desempenho em máquina de baixo pode
 - Desabilita horário de verão (caso *não* use `/t`)
 - Desativa Windows Update (caso use `/u`)
 - Remove aplicativo de Clima
-- Remove aplicativo de Introdução
-- Remove aplicativo Big Noticias
+- Remove aplicativo Dicas
+- Remove aplicativo Noticias
 - Remove aplicativo OneNote
 - Remove aplicativo Telefone
 - Remove aplicativo Holographic

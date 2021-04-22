@@ -65,8 +65,9 @@ set "defender="
 set "update="
 
 @rem Remove MetroApps
-powershell Set-ExecutionPolicy RemoteSigned
+powershell Set-ExecutionPolicy Bypass
 powershell .\removeApps.ps1
+powershell Set-ExecutionPolicy RemoteSigned
 
 @rem Remove OneDrive
 taskkill /f /im OneDrive.exe
