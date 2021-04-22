@@ -38,7 +38,10 @@ if "%wall%" == "True" (
 )
 if "%defender%" == "True" (
  echo Applying Defender
+ reg add "HKLM\SOFTWARE\Microsoft\Windows Defender\Features" /v TamperProtection /t REG_DWORD /d 0 /f
  regedit /s defender-disableAntiSpyware.reg
+ PowerShell Set-MpPreference -DisableRealtimeMonitoring 1
+ reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" /v DisableRealtimeMonitoring /t REG_DWORD /d 1 /f
 )
 if "%update%" == "True" (
  echo Applying Update
@@ -71,6 +74,7 @@ timeout 1
 %SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall
 
 del /q "%userprofile%\Desktop\Microsoft Edge.lnk"
+del /q "%public%\Desktop\Microsoft Edge.lnk"
 shutdown /r -t 0
 
 @rem wmic useraccount where name="%USERNAME%" get sid
