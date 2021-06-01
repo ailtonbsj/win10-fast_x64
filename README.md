@@ -67,3 +67,7 @@ Esse script adequa o Windows 10 para melhor desempenho em máquina de baixo pode
 ## Captura de Tela
 
 ![Screen](screen.png)
+
+## Tutorial em Vídeo
+
+[![Como otimizar o Windows 10 para melhor desempenho](http://img.youtube.com/vi/H_uzbKVE8g0/0.jpg)](http://www.youtube.com/watch?v=H_uzbKVE8g0)
